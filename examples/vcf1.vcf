@@ -1,0 +1,23 @@
+##fileformat=VCFv4.3
+##contig=<ID=chr1,length=1000000>
+##contig=<ID=chr2,length=1000000>
+##contig=<ID=chr3,length=1000000>
+##contig=<ID=chr4,length=1000000>
+##contig=<ID=chr5,length=1000000>
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total Depth">
+##INFO=<ID=AF,Number=1,Type=Float,Description="Allele Frequency">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total Allele Count">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	Sample1	Sample2	Sample3
+chr1	1001	.	A	G	50	PASS	DP=30;AF=0.4;AN=50	GT:DP:GQ	0/0:20:30	0/1:25:40	1/1:30:50
+chr1	2001	.	C	T	60	PASS	DP=40;AF=0.3;AN=60	GT:DP:GQ	0/0:22:35	1/1:40:60	1/0:36:48
+chr2	3001	.	G	A	70	PASS	DP=35;AF=0.6;AN=55	GT:DP:GQ	0/1:18:28	0/1:42:56	1/0:30:45
+chr2	4001	.	T	C	45	PASS	DP=25;AF=0.2;AN=45	GT:DP:GQ	0/1:20:32	0/0:24:38	1/1:25:40
+chr3	5001	.	A	T	55	PASS	DP=33;AF=0.5;AN=60	GT:DP:GQ	1/0:28:42	0/1:35:50	1/1:40:55
+chr3	6001	.	G	A	75	PASS	DP=42;AF=0.4;AN=50	GT:DP:GQ	1/0:36:48	1/0:30:45	0/0:20:30
+chr4	7001	.	C	G	65	PASS	DP=38;AF=0.7;AN=45	GT:DP:GQ	0/0:30:45	1/0:35:50	1/1:38:60
+chr4	8001	.	A	T	52	PASS	DP=27;AF=0.3;AN=60	GT:DP:GQ	1/0:25:40	0/0:27:42	1/0:28:42
+chr5	9001	.	T	G	47	PASS	DP=31;AF=0.4;AN=45	GT:DP:GQ	0/1:22:35	1/0:31:47	0/1:30:45
+chr5	10001	.	G	C	63	PASS	DP=29;AF=0.6;AN=55	GT:DP:GQ	1/1:28:42	0/0:29:45	1/1:29:45

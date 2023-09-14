@@ -1,0 +1,10 @@
+  CHROM  POS    ID REF     ALT          QUAL      FILTER  INFO:DP FORMAT:HG002:GT FORMAT:HG002:AO
+0    MT   73  None   A    (G,)  4.909010e+05      [PASS]    53661          (0, 0)            (1,)
+1    MT  114  None   C    (T,)  6.741780e+05      [PASS]    65177          (0, 0)            (2,)
+2    MT  152  None   T    (C,)  2.400920e+05      [PASS]    74957          (0, 0)            (0,)
+3    MT  195  None   T    (C,)  8.920040e+04      [PASS]    76379          (0, 0)            (5,)
+4    MT  263  None   A    (G,)  2.088990e+06      [PASS]    62058          (1, 1)        (21169,)
+5    MT  310  None   T  (CTC,)  7.103110e+05  [POS, SBA]    28780          (1, 1)         (8887,)
+6    MT  310  None   T   (TC,)  7.103110e+05       [POS]    28780          (0, 0)            (8,)
+7    MT  577  None   C    (T,)  1.060430e+06      [PASS]    55614          (1, 1)        (18263,)
+8    MT  610  None   C    (T,)  6.473050e+05      [PASS]    63383          (0, 0)            (2,)
