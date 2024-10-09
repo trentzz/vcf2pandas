@@ -22,7 +22,7 @@ def vcf2pandas(vcf_file, info_fields=None, sample_list=None, format_fields=None)
         data["REF"].append(variant.ref)
         data["ALT"].append(variant.alts)
         data["QUAL"].append(variant.qual)
-        data["FILTER"].append(variant.filter)
+        data["FILTER"].append(", ".join([v.name for v in variant.filter.values()]))
 
         if info_fields is None:
             for key, value in variant.info.items():
