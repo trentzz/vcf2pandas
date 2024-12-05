@@ -1,4 +1,5 @@
 # vcf2pandas
+![PyPI Downloads](https://static.pepy.tech/badge/vcf2pandas)
 
 `vcf2pandas` is a python package to convert vcf files to `pandas` dataframes. 
 
