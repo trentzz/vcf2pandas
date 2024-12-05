@@ -1,7 +1,9 @@
 # vcf2pandas
+
+![PyPI Downloads](https://static.pepy.tech/badge/vcf2pandas/month)
 ![PyPI Downloads](https://static.pepy.tech/badge/vcf2pandas)
 
-`vcf2pandas` is a python package to convert vcf files to `pandas` dataframes. 
+`vcf2pandas` is a python package to convert vcf files to `pandas` dataframes.
 
 ## Install
 
@@ -39,31 +41,36 @@ df_selected = vcf2pandas(
     format_fields=format_fields,
 )
 ```
+
 ## Custom column ordering
 
 `vcf2pandas` can select custom/specific:
+
 - INFO fields
 - samples
 - FORMAT fields
 
-And order the selected columns based on the input list. 
+And order the selected columns based on the input list.
 
 E.g. The following list:
+
 ```python
 info_fields = ["DP", "MQM", "QA"]
 ```
+
 Gets the columns (in that order)
-```
+
+```txt
 INFO:DP    INFO:MQM    INFO:QA
 ```
 
 Note that this **only applies for INFO and FORMAT columns**. That is, the samples will be ordered based on the VCF and not the input list.
 
-
 ## Output
 
 ### INFO and FORMAT headings
-```
+
+```txt
 INFO:INFO_FIELD                     e.g. INFO:DP
 FORMAT:SAMPLE_NAME:FORMAT_FIELD     e.g. FORMAT:HG002:GT
 ```
@@ -72,25 +79,32 @@ FORMAT:SAMPLE_NAME:FORMAT_FIELD     e.g. FORMAT:HG002:GT
 
 When certain INFO fields are not present for certain variants, `vcf2pandas` inserts a `.` instead in that cell. E.g. for `vcf3_all.txt` you can see `INFO:GENE` column has `.` for the first 7 variants.
 
-
 ## Examples
 
 Example vcf and output files (dataframes as a .txt file) are available in `examples/`
 
 ### Example Usage
+
 ```python
-df1 = vcf2pandas("examples/vcf1.vcf")
-df2 = vcf2pandas("examples/vcf2.vcf")
+df1_all = vcf2pandas("examples/vcf1.vcf")
+df2_all = vcf2pandas("examples/vcf2.vcf")
 
 df3_all = vcf2pandas("examples/vcf3.vcf")
 
-info = ["DP"]
-samples = ["HG002"]
+info_fields = ["DP"]
+sample_list = ["HG002"]
 format_fields = ["GT", "AO"]
-df3_selected = vcf2pandas("examples/vcf3.vcf")
+
+df3_selected = vcf2pandas(
+    "examples/vcf3.vcf",
+    info_fields=info_fields,
+    sample_list=sample_list,
+    format_fields=format_fields
+)
 ```
 
 To print to a text file:
+
 ```python
 with open("path_to_txt_file.txt") as f:
     f.write(df.to_string())
