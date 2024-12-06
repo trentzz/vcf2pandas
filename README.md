@@ -106,6 +106,26 @@ df3_selected = vcf2pandas(
 To print to a text file:
 
 ```python
-with open("path_to_txt_file.txt") as f:
+with open("path_to_txt_file.txt", "w", encoding='utf-8') as f:
     f.write(df.to_string())
 ```
+
+To recreate the examples, run:
+
+```bash
+poetry run python tests/run_examples.py
+```
+
+## Changelog
+
+### v0.1.0
+
+- Initial project
+
+### v0.1.1
+
+- Fixed converting variant filter into string properly
+
+### v0.1.2
+
+- Updated pysam version to `0.22.1`

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vcf2pandas"
-version = "0.1.1"
+version = "0.1.2"
 description = "Package to convert a vcf into a pandas dataframe."
 authors = ["Trent Zeng"]
 license = "MIT"
