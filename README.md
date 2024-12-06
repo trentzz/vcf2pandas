@@ -129,3 +129,5 @@ poetry run python tests/run_examples.py
 ### v0.1.2
 
 - Updated pysam version to `0.22.1`
+
+Please open an issue if you encounter any problems! Thanks!
