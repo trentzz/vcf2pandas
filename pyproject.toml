@@ -11,7 +11,7 @@ keywords = ["vcf", "python", "pandas"]
 [tool.poetry.dependencies]
 python = "^3.10"
 pandas = "^2.1.0"
-pysam = "^0.21.0"
+pysam = "^0.22.1"
 
 
 [build-system]
