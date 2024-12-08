@@ -14,7 +14,7 @@ pip install vcf2pandas
 ## Dependencies
 
 - pandas (2.1.0)
-- pysam (0.21.0)
+- pysam (0.22.1)
 
 ## Usage
 
