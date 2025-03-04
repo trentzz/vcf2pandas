@@ -3,13 +3,20 @@ import pandas
 
 
 def vcf2pandas(
-    vcf_file,
+    vcf_file: str,
     info_fields: list[str] | dict[str, str] | None = None,
     sample_list: list[str] | dict[str, str] | None = None,
     format_fields: list[str] | dict[str, str] | None = None,
+    remove_empty_columns: bool = False,
 ):
+    def get_info_name(info_field: str) -> str:
+        return f"INFO:{info_field}"
+
+    def get_format_name(sample_name: str, format_field: str) -> str:
+        return f"FORMAT:{sample_name}:{format_field}"
+
     vcf_reader = pysam.VariantFile(vcf_file)
-    data = {
+    data: dict[str, list[str]] = {
         "CHROM": [],
         "POS": [],
         "ID": [],
@@ -19,17 +26,65 @@ def vcf2pandas(
         "FILTER": [],
     }
 
-    def format_name(sample_name: str, format_field: str) -> str:
-        return f"FORMAT:{sample_name}:{format_field}"
-    
-    def renamed_format_name(sample_name: str, format_field: str) -> str:
-        return f"{sample_name}:{format_field}"
+    # Constructs a map from the vcf info field name to the info column name
+    info_map: dict[str, str] = {}
+    match info_fields:
+        case None:
+            # If no info_fields are provided, use the info fields specified
+            # in the vcf file header.
+            for key in vcf_reader.header.info.keys():
+                info_map[key] = get_info_name(key)
+        case list():
+            info_map = {key: get_info_name(key) for key in info_fields}
+        case dict():
+            info_map = {key: get_info_name(value) for key, value in info_fields.items()}
 
-    def info_name(info_field: str) -> str:
-        return f"INFO:{info_field}"
+    for value in info_map.values():
+        data[value] = []
 
-    variants_read = 0
+    # Constructs a map from the vcf sample name to the renamed sample name.
+    sample_map: dict[str, str] = {}
+    match sample_list:
+        case None:
+            # If no sample_list is provided, use all samples in the vcf file.
+            for sample in vcf_reader.header.samples:
+                sample_map[sample] = sample
+        case list():
+            sample_map = {key: key for key in sample_list}
+        case dict():
+            sample_map = sample_list
+
+    # Constructs a map from the vcf sample name to a map from the vcf format field
+    # name to the renamed format field name.
+    format_map: dict[str, dict[str, str]] = {}
+    match format_fields:
+        case None:
+            # If no format_fields are provided, use the format fields specified
+            # in the vcf file header.
+            for key, value in sample_map.items():
+                format_map[key] = {
+                    format_name: get_format_name(value, format_name)
+                    for format_name in vcf_reader.header.formats.keys()
+                }
+        case list():
+            for key, value in sample_map.items():
+                format_map[key] = {
+                    format_name: get_format_name(value, format_name)
+                    for format_name in format_fields
+                }
+        case dict():
+            for key, value in sample_map.items():
+                format_map[key] = {
+                    format_name: get_format_name(value, renamed_format_name)
+                    for format_name, renamed_format_name in format_fields.items()
+                }
+
+    for sample_format_values in format_map.values():
+        for value in sample_format_values.values():
+            data[value] = []
+
     for variant in vcf_reader.fetch():
+        # Manual addition of variant data
         data["CHROM"].append(variant.chrom)
         data["POS"].append(variant.pos)
         data["ID"].append(variant.id)
@@ -38,55 +93,28 @@ def vcf2pandas(
         data["QUAL"].append(variant.qual)
         data["FILTER"].append(", ".join([v.name for v in variant.filter.values()]))
 
-        match info_fields:
-            case None:
-                for key, value in variant.info.items():
-                    if info_name(key) not in data:
-                        data[info_name(key)] = ["."] * variants_read
-                    data[info_name(key)].append(value)
-            case list() as info_fields_list:
-                for key in info_fields_list:
-                    if info_name(key) not in data:
-                        data[info_name(key)] = ["."] * variants_read
-                    data[info_name(key)].append(variant.info[key])
-            case dict() as info_fields_dict:
-                for key, renamed_key in info_fields_dict.items():
-                    if renamed_key not in data:
-                        data[renamed_key] = ["."] * variants_read
-                    data[renamed_key].append(variant.info[key])
+        # Add info fields
+        for key, value in info_map.items():
+            if key in variant.info:
+                data[value].append(variant.info[key])
+            else:
+                data[value].append(".")
 
+        # Add format fields
         for sample in variant.samples.values():
+            # Skip samples not in sample_list
             if sample_list is not None and sample.name not in sample_list:
                 continue
-            
-            print(format_fields)
 
-            match format_fields:
-                case None:
-                    for key, value in sample.items():
-                        if format_name(sample.name, key) not in data:
-                            data[format_name(sample.name, key)] = ["."] * variants_read
-                        data[format_name(sample.name, key)].append(value)
-                case list() as format_fields_list:
-                    for key in format_fields_list:
-                        if format_name(sample.name, key) not in data:
-                            data[format_name(sample.name, key)] = ["."] * variants_read
-                        data[format_name(sample.name, key)].append(sample[key])
-                case dict() as format_fields_dict:
-                    for key, renamed_key in format_fields_dict.items():
-                        renamed_sample = sample_list[sample.name]
-                        print(key, renamed_key)
-                        print(renamed_sample)
-                        print(renamed_format_name(renamed_sample, renamed_key))
-                        if renamed_format_name(renamed_sample, renamed_key) not in data:
-                            data[renamed_format_name(renamed_sample, renamed_key)] = ["."] * variants_read
-                        data[renamed_format_name(renamed_sample, renamed_key)].append(sample[key])
-
-        for value in data.values():
-            if len(value) <= variants_read:
-                value.append(".")
-
-        variants_read += 1
+            for key, value in format_map[sample.name].items():
+                if key in sample.keys():
+                    data[value].append(sample[key])
+                else:
+                    data[value].append(".")
 
     df = pandas.DataFrame(data)
+
+    if remove_empty_columns:
+        df = df.loc[:, (df != ".").any(axis=0)]
+
     return df
